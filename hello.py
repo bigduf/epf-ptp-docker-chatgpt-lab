@@ -24,9 +24,8 @@ def chatgpt():
 
 @app.route('/generate_code', methods=['GET'])
 def generate_code():
-    # Get the JSON data from the request
-    language = request.json['language']
-    content = request.json['content']
+    language = request.args.get('language')
+    content = request.args.get('content')
     
     if language is None or content is None:
         return "Error: Missing language or content parameter", 400
