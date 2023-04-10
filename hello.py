@@ -25,24 +25,21 @@ def chatgpt():
 @app.route('/generate_code', methods=['POST'])
 def generate_code():
     # Get the JSON data from the request
-    data = request.args
-    language = data.get('language')
-    content = data.get('content')
-
+    language = request.json['language']
+    content = request.json['content']
+    
+    prompt=f"Hello Chat, please generate {language} code: {content}"
+    
     # Call OpenAI API to generate code
     completion = openai.ChatCompletion.create(
         engine="davinci-codex",
-        prompt=f"Hello Chat, please generate {language} code: {content}",
+        prompt=prompt,
         max_tokens=1024,
         n=1,
         stop=None,
         temperature=0.5,
     )
     generated_code = completion['choices'][0]['text']
-
-    # Return generated code as JSON response
-    response = {
-        'generated_code': generated_code
-    }  
-
-    return jsonify(response)
+    
+    # Return generated code
+    return generated_code
