@@ -22,24 +22,19 @@ def chatgpt():
     )
     return completion['choices'][0]['message']['content']
 
-@app.route('/generate_code', methods=['POST'])
+@app.route('/generate_code', methods=['GET'])
 def generate_code():
     # Get the JSON data from the request
     language = request.json['language']
     content = request.json['content']
     
+    if language is None or content is None:
+        return "Error: Missing language or content parameter", 400
+
     prompt=f"Hello Chat, please generate {language} code: {content}"
     
-    # Call OpenAI API to generate code
     completion = openai.ChatCompletion.create(
-        engine="davinci-codex",
-        prompt=prompt,
-        max_tokens=1024,
-        n=1,
-        stop=None,
-        temperature=0.5,
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
     )
-    generated_code = completion['choices'][0]['text']
-    
-    # Return generated code
-    return generated_code
+    return completion['choices'][0]['message']['content']
